@@ -1,10 +1,10 @@
 plugins {
-    id 'fabric-loom' version "${loom_version}"
-    id 'maven-publish'
+    id("net.fabricmc.fabric-loom") version("${loom_version}")
+    id("maven-publish")
 }
 
 // Run full project build when Gradle is invoked without explicit tasks
-defaultTasks 'build'
+defaultTasks("build")
 
 version = project.mod_version
 group = project.maven_group
@@ -28,13 +28,13 @@ repositories {
     }
     maven { url = "https://maven.shedaniel.me/" }
     maven { url = "https://maven.terraformersmc.com/releases/" }
-    flatDir { dir 'libs' }
+    flatDir { dir "libs" }
 }
 
 // --- VOXY DEPENDENCY RESOLVER ---
 // Agents/Contributors: Update this when bumping Voxy version.
 // Finds the latest matching jar in /libs (e.g. voxy-0.2.15-beta+1.21.11.jar)
-def TARGET_VOXY_VERSION = "0.2.15"
+/*def TARGET_VOXY_VERSION = "0.2.15"
 //
 
 def voxyJars = fileTree(dir: 'libs', include: "voxy-${TARGET_VOXY_VERSION}*.jar").files.sort()
@@ -44,23 +44,23 @@ if (voxyJars.isEmpty()) {
 if (voxyJars.size() > 1) {
     logger.warn("VOXY WARNING: Multiple voxy jars found. Using: ${voxyJars.last().name}")
 }
-def voxyJarFile = voxyJars.last()
+def voxyJarFile = voxyJars.last()*/
 // --------------------------------
 
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // HM-API
-    include modImplementation("net.azureaaron:hm-api:${project.hm_api_version}")
+    include implementation("net.azureaaron:hm-api:${project.hm_api_version}")
 
     // Voxy - Local for compilation
-    modCompileOnly files(voxyJarFile)
+    //compileOnly files(voxyJarFile)
+    implementation("maven.modrinth:voxy:${project.voxy_version}")
 }
 
 processResources {
@@ -72,11 +72,11 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 21
+    it.options.release = 25
 }
 
 java {
     withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
